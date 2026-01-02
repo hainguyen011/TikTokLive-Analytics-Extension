@@ -1,0 +1,214 @@
+<div id="tli-root" class="tli-container">
+  <!-- Header -->
+  <div class="tli-header" id="tli-drag-handle">
+    <div class="tli-logo">
+      <span>📊</span>
+      <span>TIKTOK LIVE INSIGHT</span>
+    </div>
+    <div class="tli-controls">
+      <button class="tli-btn-icon" id="tli-expand" title="Expand Full View">🔳</button>
+      <button class="tli-btn-icon" id="tli-minimize" title="Minimize">−</button>
+      <button class="tli-btn-icon" id="tli-close" title="Close">×</button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tli-tabs">
+    <button class="tli-tab active" data-tab="metrics">Metrics</button>
+    <button class="tli-tab" data-tab="comments">Chat</button>
+    <button class="tli-tab" data-tab="ai">AI Bot</button>
+    <button class="tli-tab" id="tli-tab-alerts" data-tab="alerts">Alerts</button>
+  </div>
+
+  <div class="tli-content">
+    <!-- Metrics Panel -->
+    <div class="tli-panel" id="tli-panel-metrics">
+      <div class="tli-metrics-grid">
+        <div class="tli-metric-card">
+          <div class="tli-metric-label">Viewers</div>
+          <div class="tli-metric-value" id="tli-metric-viewers">0</div>
+        </div>
+        <div class="tli-metric-card">
+          <div class="tli-metric-label">Likes</div>
+          <div class="tli-metric-value" id="tli-metric-likes">0</div>
+        </div>
+        <div class="tli-metric-card">
+          <div class="tli-metric-label">Engagement</div>
+          <div class="tli-metric-value" id="tli-metric-engagement">0</div>
+        </div>
+        <div class="tli-metric-card">
+          <div class="tli-metric-label">Comments</div>
+          <div class="tli-metric-value" id="tli-metric-comments">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comments Panel -->
+    <div class="tli-panel hidden" id="tli-panel-comments">
+      <div id="tli-comments-list">
+        <div style="text-align: center; color: var(--tli-text-dim); padding: 40px 20px;">
+          <p style="font-size: 11px;">Listening for live comments...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Panel -->
+    <div class="tli-panel hidden" id="tli-panel-ai">
+      <!-- DASHBOARD: AI COMMAND CENTER -->
+      <div class="tli-settings-box"
+        style="border-left: 4px solid var(--tli-primary); background: rgba(0, 242, 234, 0.05);">
+        <h3 style="color: var(--tli-primary); display: flex; justify-content: space-between;">
+          🛰️ AI COMMAND CENTER
+          <span id="tli-ai-status-pulse" class="tli-pulse"></span>
+        </h3>
+
+        <div class="tli-stats-grid">
+          <div class="tli-stat-mini">
+            <div class="tli-stat-mini-label">TOTAL SENT</div>
+            <div class="tli-stat-mini-value" id="tli-ai-stat-total">0</div>
+          </div>
+          <div class="tli-stat-mini">
+            <div class="tli-stat-mini-label">LATENCY</div>
+            <div class="tli-stat-mini-value" id="tli-ai-stat-latency">0ms</div>
+          </div>
+          <div class="tli-stat-mini">
+            <div class="tli-stat-mini-label">NEXT IN</div>
+            <div class="tli-stat-mini-value" id="tli-ai-stat-countdown">--</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div class="tli-sensor-tag">👁️ Vision Hits: <span id="tli-ai-stat-vision">0</span></div>
+          <div class="tli-sensor-tag">🎙️ Voice Hits: <span id="tli-ai-stat-voice">0</span></div>
+        </div>
+        <div class="tli-sensor-tag"
+          style="margin-top: 8px; justify-content: center; border: 1px dashed var(--tli-primary);">
+          🧠 Linguistic Sync: <span id="tli-ai-stat-sync" style="color: var(--tli-primary)">Active</span>
+        </div>
+
+        <!-- SENSORY LOG: MEDIA PREVIEW -->
+        <div class="tli-sensory-gallery" style="margin-top: 15px;">
+          <h4
+            style="font-size: 9px; color: var(--tli-text-dim); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px;">
+            📡 MULTIMODAL SENSORY LOG</h4>
+          <div class="tli-vision-preview-container">
+            <img id="tli-ai-preview-vision" src="" alt="AI Vision Feed" class="tli-vision-thumbnail">
+            <div id="tli-vision-scanning" class="tli-scanning-overlay">SCANNING...</div>
+          </div>
+          <div class="tli-voice-indicator" style="margin-top: 8px;">
+            <div class="tli-sensor-tag" style="font-size: 9px;">
+              🎙️ Last Voice Activity: <span id="tli-ai-stat-voice-time">--:--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 1: AI CORE -->
+      <div class="tli-settings-box">
+        <h3 style="color: var(--tli-primary)">⚙️ AI CORE</h3>
+        <div style="margin-bottom: 12px;">
+          <label
+            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Gemini
+            2.5 API Key</label>
+          <input type="password" id="tli-input-apikey" placeholder="Enter API Key...">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 12px;">AI Auto-Response</span>
+          <label class="tli-switch">
+            <input type="checkbox" id="tli-toggle-ai">
+            <span class="tli-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Section 2: VIRTUAL PERSONA -->
+      <div class="tli-settings-box">
+        <h3 style="color: var(--tli-primary)">🎭 VIRTUAL PERSONA</h3>
+        <div style="margin-bottom: 12px;">
+          <label
+            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Character
+            Bio</label>
+          <textarea id="tli-input-persona"
+            style="height: 60px;">A friendly and supportive viewer who loves the stream.</textarea>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label
+            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Topics</label>
+          <input type="text" id="tli-input-topics" placeholder="Add interests (gaming, chill, etc)...">
+        </div>
+        <div>
+          <label
+            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Interaction
+            Style</label>
+          <select id="tli-select-style">
+            <option value="Friendly">Friendly & Kind</option>
+            <option value="Hype">Hype & Energetic</option>
+            <option value="Curious">Curious & Questioning</option>
+            <option value="Sarcastic">Sarcastic</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section 4: MULTIMODAL INTELLIGENCE -->
+      <div class="tli-settings-box" style="border-color: var(--tli-accent)">
+        <h3 style="color: var(--tli-accent)">⚡ MULTIMODAL SENSORS</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-size: 12px;">👁️ Live Vision Analysis</span>
+          <label class="tli-switch">
+            <input type="checkbox" id="tli-toggle-vision">
+            <span class="tli-slider"></span>
+          </label>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-size: 12px;">🎙️ Host Voice Analysis</span>
+          <label class="tli-switch">
+            <input type="checkbox" id="tli-toggle-voice">
+            <span class="tli-slider"></span>
+          </label>
+        </div>
+        <p style="font-size: 9px; color: var(--tli-text-dim); font-style: italic;">
+          * Visions & Voice sensors use Gemini 2.5 Flash to 'see' and 'hear' the host.
+        </p>
+      </div>
+
+      <!-- Section 3: AI ENGAGEMENT -->
+      <div class="tli-settings-box" style="border-color: var(--tli-secondary)">
+        <h3 style="color: var(--tli-secondary)">🔥 AUTO-ENGAGEMENT</h3>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-size: 13px; font-weight: 700;">Enable AI Commenting</span>
+          <label class="tli-switch" style="transform: scale(1.1);">
+            <input type="checkbox" id="tli-toggle-use-ai">
+            <span class="tli-slider"></span>
+          </label>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <span style="font-size: 11px; color: var(--tli-text-dim);">Interval (seconds)</span>
+          <input type="number" id="tli-input-interval" value="30" min="5" style="width: 70px;">
+        </div>
+
+        <button id="tli-btn-ai-manual" class="tli-btn-premium">
+          ✨ GENERATE & POST NOW
+        </button>
+
+        <div style="margin-top: 16px;">
+          <label
+            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Backup
+            Templates</label>
+          <textarea id="tli-input-templates" style="height: 40px; font-size: 10px;">Tuyệt vời quá!</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts Panel -->
+    <div class="tli-panel hidden" id="tli-panel-alerts">
+      <div id="tli-alerts-list">
+        <div style="text-align: center; color: var(--tli-text-dim); padding: 40px 20px;">
+          <p style="font-size: 11px;">Zero anomalies detected.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

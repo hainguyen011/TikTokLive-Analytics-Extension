@@ -1,0 +1,18 @@
+{
+  "comment": {
+    "container": "[data-e2e='chat-message']",
+    "username": "[data-e2e='message-owner-name']",
+    "text": ".break-words",
+    "timestamp": ".timestamp"
+  },
+  "metrics": {
+    "viewers": "[data-e2e='live-chat-container']",
+    "likes": "[data-e2e='live-header-container']",
+    "shares": "[data-e2e='share-count']"
+  },
+  "product": {
+    "card": ".product-card",
+    "title": ".product-card .title",
+    "price": ".product-card .price"
+  }
+}

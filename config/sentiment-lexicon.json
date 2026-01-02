@@ -1,0 +1,8 @@
+{
+  "positive": ["tuyệt", "đẹp", "hay", "good", "great", "love", "amazing", "hay quá", "xinh", "đáng mua", "❤️", "👍", "🔥"],
+  "negative": ["tệ", "dở", "bad", "hate", "scam", "lừa đảo", "không tốt", "đắt", "👎"],
+  "weights": {
+    "positive": 1,
+    "negative": -1
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "manifest_version": 3,
+  "name": "TikTok Live Insight",
+  "version": "1.0.0",
+  "description": "Real-time analytics and AI-powered insights for TikTok livestream hosts and moderators",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "notifications"
+  ],
+  
+  "host_permissions": [
+    "https://*.tiktok.com/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "TikTok Live Insight",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["https://*.tiktok.com/*"],
+      "js": ["src/content/loader.js"],
+       "run_at": "document_idle"
+    }
+  ],
+  
+  "background": {
+    "service_worker": "src/background/background.js",
+    "type": "module"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "config/*.json",
+        "src/utils/*.js",
+        "src/analysis/*.js",
+        "src/content/*.js",
+        "src/dashboard/*.html",
+        "src/dashboard/*.css",
+        "src/dashboard/*.js",
+        "src/libs/*.js",
+        "icons/*"
+      ],
+      "matches": ["https://*.tiktok.com/*"]
+    }
+  ],
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}
