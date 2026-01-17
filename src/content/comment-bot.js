@@ -5,7 +5,7 @@ export class CommentBot {
     this.lastActionTime = 0;
     this.cooldown = 15000; // 15 seconds between automated actions
     this.isEnabled = false;
-    
+
     this.periodicInterval = 60000; // Default 1 minute
     this.periodicTemplates = [];
     this.isPeriodicEnabled = false;
@@ -38,7 +38,8 @@ export class CommentBot {
         apiKey: config.apiKey,
         persona: config.persona,
         topics: config.topics,
-        style: config.style
+        style: config.style,
+        productContext: config.productContext
       });
     }
     logger.info(`AI Auto-Response updated: ${this.isEnabled ? 'ON' : 'OFF'}`);
@@ -53,13 +54,14 @@ export class CommentBot {
     this.useVoice = config.voice || false;
 
     this.restartPeriodicTimer();
-    
+
     if (config.apiKey && this.aiGenerator) {
       this.aiGenerator.setSettings({
         apiKey: config.apiKey,
         persona: config.persona,
         topics: config.topics,
-        style: config.style
+        style: config.style,
+        productContext: config.productContext
       });
     }
 
@@ -87,16 +89,16 @@ export class CommentBot {
     // Priority: 1. Video with "player" class, 2. First visible video, 3. Any video
     const allVideos = Array.from(document.querySelectorAll('video'));
     if (allVideos.length === 0) return null;
-    
-    return allVideos.find(v => v.classList.contains('player') || v.id.includes('player')) || 
-           allVideos.find(v => v.offsetWidth > 100) || 
-           allVideos[0];
+
+    return allVideos.find(v => v.classList.contains('player') || v.id.includes('player')) ||
+      allVideos.find(v => v.offsetWidth > 100) ||
+      allVideos[0];
   }
 
   async captureVisionFrame() {
     const video = this.findMainVideo();
     if (!video) return null;
-    
+
     try {
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth || 640;
@@ -116,21 +118,21 @@ export class CommentBot {
   async captureVoiceSnippet(durationMs = 3000) {
     const video = this.findMainVideo();
     if (!video) {
-       logger.warn('CommentBot: Reference video for audio capture not found');
-       return null;
+      logger.warn('CommentBot: Reference video for audio capture not found');
+      return null;
     }
 
     try {
       if (!this.audioContext) {
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       }
-      
+
       if (this.audioContext.state === 'suspended') {
         await this.audioContext.resume();
       }
 
       const dest = this.audioContext.createMediaStreamDestination();
-      
+
       // Attempt 1: createMediaElementSource
       let source;
       try {
@@ -147,7 +149,7 @@ export class CommentBot {
 
       const recorder = new MediaRecorder(dest.stream);
       const chunks = [];
-      
+
       return new Promise((resolve) => {
         recorder.ondataavailable = (e) => {
           if (e.data.size > 0) chunks.push(e.data);
@@ -169,7 +171,7 @@ export class CommentBot {
         };
         recorder.start();
         setTimeout(() => {
-            if (recorder.state === 'recording') recorder.stop();
+          if (recorder.state === 'recording') recorder.stop();
         }, durationMs);
       });
     } catch (e) {
@@ -180,11 +182,11 @@ export class CommentBot {
 
   async postPeriodicComment(isManual = false) {
     if (!this.isPeriodicEnabled && !isManual) return;
-    
+
     let text = '';
     if (this.useAi && this.aiGenerator) {
       logger.info('CommentBot: Triggering AI generation for periodic comment...');
-      
+
       let imageData = null;
       let audioData = null;
 
@@ -200,7 +202,7 @@ export class CommentBot {
 
       const chatHistory = this.aiGenerator.contextBuffer.map(c => `${c.username}: ${c.text}`);
       text = await this.aiGenerator.generateComment(chatHistory, imageData, audioData);
-      
+
       if (!text) {
         logger.warn('CommentBot: AI Generation failed, falling back to templates');
       } else {
@@ -209,7 +211,7 @@ export class CommentBot {
         if (imageData) this.aiStats.sentVision++;
         if (audioData) this.aiStats.sentVoice++;
         if (!imageData && !audioData) this.aiStats.sentText++;
-        
+
         const currentStyle = this.aiGenerator.style || 'Default';
         this.aiStats.styleUsage[currentStyle] = (this.aiStats.styleUsage[currentStyle] || 0) + 1;
       }
@@ -227,11 +229,11 @@ export class CommentBot {
   async postComment(text, type = 'auto-reply') {
     if (!this.isEnabled && type === 'auto-reply') return;
     if (!this.isPeriodicEnabled && type === 'periodic') return;
-    
+
     // If auto-reply and AI Generator is available with Key, use it to enhance the response
     if (type === 'auto-reply' && this.aiGenerator && this.aiGenerator.apiKey) {
       const chatHistory = this.aiGenerator.contextBuffer.map(c => `${c.username}: ${c.text}`);
-      
+
       let imageData = null;
       let audioData = null;
 
@@ -244,16 +246,16 @@ export class CommentBot {
 
     const now = Date.now();
     // Use a shorter cooldown for periodic if needed, or stick to a global one
-    if (now - this.lastActionTime < 5000) { 
+    if (now - this.lastActionTime < 5000) {
       logger.debug('CommentBot: Global action cooldown active, skipping');
       return;
     }
 
     try {
       // 1. Find the input container (TikTok uses dynamic classes for margin)
-      const inputContainer = document.querySelector('div[class*="flex-1"][class*="h-auto"][class*="me-"]') || 
-                             document.querySelector('.flex-1.h-auto.me-52') ||
-                             document.querySelector('.flex-1.h-auto.me-20');
+      const inputContainer = document.querySelector('div[class*="flex-1"][class*="h-auto"][class*="me-"]') ||
+        document.querySelector('.flex-1.h-auto.me-52') ||
+        document.querySelector('.flex-1.h-auto.me-20');
       if (!inputContainer) {
         logger.warn('CommentBot: Chat input container not found');
         return;
@@ -268,7 +270,7 @@ export class CommentBot {
 
       // 3. Focus and set text
       input.focus();
-      
+
       // Using execCommand is more robust for triggering TikTok's internal state
       // If it fails, we fall back to innerText
       try {
@@ -281,7 +283,7 @@ export class CommentBot {
 
       // 4. Trigger events to make sure UI updates
       input.dispatchEvent(new Event('input', { bubbles: true }));
-      
+
       // 5. Short delay to mimic human behavior
       await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 500));
 
@@ -295,15 +297,15 @@ export class CommentBot {
         cancelable: true
       });
       input.dispatchEvent(enterEvent);
-      
+
       this.lastActionTime = Date.now();
       this.aiStats.totalSent++;
       this.aiStats.lastSentTime = this.lastActionTime;
-      
+
       logger.info(`CommentBot: Posted ${type}: "${text}"`);
 
       if (this.onAction) this.onAction(type, text);
-      
+
     } catch (error) {
       logger.error('CommentBot: Error posting comment:', error);
     }

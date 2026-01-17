@@ -11,7 +11,7 @@ export class DataExtractor {
       if (!this.selectors?.comment) return null;
       const username = element.querySelector(this.selectors.comment.username)?.textContent?.trim();
       const text = element.querySelector(this.selectors.comment.text)?.textContent?.trim();
-      
+
       // TikTok often has the timestamp in a different place now or it's dynamic
       const timestamp = element.querySelector(this.selectors.comment.timestamp)?.textContent?.trim() || new Date().toLocaleTimeString();
 
@@ -36,7 +36,7 @@ export class DataExtractor {
   extractMetrics() {
     try {
       if (!this.selectors?.metrics) return null;
-      
+
       // Viewer count is often text like "Viewers · 1.2K" inside the chat container
       const chatContainer = document.querySelector(this.selectors.metrics.viewers);
       let viewersStr = '';
@@ -74,18 +74,110 @@ export class DataExtractor {
     }
   }
 
+  extractProducts() {
+    try {
+      if (!this.selectors?.product) return [];
+
+      const productCards = document.querySelectorAll(this.selectors.product.card);
+      const products = [];
+
+      productCards.forEach((card, index) => {
+        const title = card.querySelector(this.selectors.product.title)?.textContent?.trim();
+        const price = card.querySelector(this.selectors.product.price)?.textContent?.trim();
+        const image = card.querySelector('img')?.src;
+        const isPinned = card.classList.contains('pinned') || !!card.querySelector('.pinned-label'); // Simple heuristic
+
+        if (title) {
+          products.push({
+            id: `p_${index}_${title.substring(0, 5)}`,
+            title,
+            price,
+            image,
+            isPinned,
+            timestamp: Date.now()
+          });
+        }
+      });
+
+      return products;
+    } catch (error) {
+      logger.error('Error extracting products:', error);
+      return [];
+    }
+  }
+
   parseMetricValue(str) {
     if (!str) return 0;
     const cleanStr = str.toLowerCase().replace(/,/g, '');
     let multiplier = 1;
-    
+
     if (cleanStr.includes('k')) {
       multiplier = 1000;
     } else if (cleanStr.includes('m')) {
       multiplier = 1000000;
     }
-    
+
     const num = parseFloat(cleanStr.replace(/[km]/g, ''));
     return isNaN(num) ? 0 : Math.floor(num * multiplier);
+  }
+
+  extractGift(element) {
+    try {
+      if (!this.selectors?.gift) return null;
+
+      const username = element.querySelector(this.selectors.comment.username)?.textContent?.trim();
+      const giftName = element.querySelector(this.selectors.gift.name)?.textContent?.trim();
+      const giftCountStr = element.querySelector(this.selectors.gift.count)?.textContent?.trim() || '1';
+      const giftIcon = element.querySelector(this.selectors.gift.icon)?.src;
+
+      if (!giftName) return null;
+
+      const giftCount = parseInt(giftCountStr.replace(/x/i, '')) || 1;
+
+      return {
+        type: EVENT_TYPES.GIFT, // Assuming this is defined
+        timestamp: Date.now(),
+        data: {
+          id: `g_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+          username,
+          giftName,
+          giftCount,
+          giftIcon,
+          // Diamond estimation (rough values for common gifts)
+          diamonds: this.estimateDiamonds(giftName) * giftCount
+        }
+      };
+    } catch (error) {
+      logger.error('Error extracting gift:', error);
+      return null;
+    }
+  }
+
+  estimateDiamonds(name) {
+    const giftValues = {
+      'Rose': 1,
+      'TikTok': 1,
+      'Finger Heart': 5,
+      'Mic': 5,
+      'Panda': 5,
+      'Ice Cream': 1,
+      'Love You': 5,
+      'Doughnut': 30,
+      'Confetti': 100,
+      'Cap': 99,
+      'Paper Crane': 99,
+      'Crown': 199,
+      'Gem': 15,
+      'Lion': 29999,
+      'Universe': 34999
+    };
+
+    // Pattern matching for Vietnamese names or other variations
+    const lowerName = name.toLowerCase();
+    for (const [key, value] of Object.entries(giftValues)) {
+      if (lowerName.includes(key.toLowerCase())) return value;
+    }
+
+    return 1; // Default
   }
 }

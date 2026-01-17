@@ -14,5 +14,11 @@
     "card": ".product-card",
     "title": ".product-card .title",
     "price": ".product-card .price"
+  },
+  "gift": {
+    "container": "[data-e2e='chat-gift-message']",
+    "icon": "img[src*='gift']",
+    "count": ".gift-count",
+    "name": ".gift-name"
   }
 }

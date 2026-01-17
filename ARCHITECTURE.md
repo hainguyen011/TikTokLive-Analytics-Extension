@@ -561,6 +561,7 @@ Return JSON array with analysis for each comment.
 }
 
 .tli-metric-value {
+  color: white;
   font-size: 18px;
   font-weight: 600;
 }

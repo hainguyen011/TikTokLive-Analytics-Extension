@@ -16,7 +16,8 @@ export const EVENT_TYPES = {
   COMMENT: 'comment',
   VIEWER_UPDATE: 'viewer_update',
   ENGAGEMENT: 'engagement',
-  PRODUCT_PIN: 'product_pin'
+  PRODUCT_PIN: 'product_pin',
+  GIFT: 'gift'
 };
 
 export const INTENT_TYPES = {

@@ -3,21 +3,23 @@
   <div class="tli-header" id="tli-drag-handle">
     <div class="tli-logo">
       <span>📊</span>
-      <span>TIKTOK LIVE INSIGHT</span>
+      <span>Tiktok Live Analytics</span>
     </div>
     <div class="tli-controls">
-      <button class="tli-btn-icon" id="tli-expand" title="Expand Full View">🔳</button>
-      <button class="tli-btn-icon" id="tli-minimize" title="Minimize">−</button>
-      <button class="tli-btn-icon" id="tli-close" title="Close">×</button>
+      <button class="tli-btn-icon" id="tli-expand" title="Xem Toàn Màn Hình">🔳</button>
+      <button class="tli-btn-icon" id="tli-minimize" title="Thu nhỏ">−</button>
+      <button class="tli-btn-icon" id="tli-close" title="Đóng">×</button>
     </div>
   </div>
 
   <!-- Tabs -->
   <div class="tli-tabs">
-    <button class="tli-tab active" data-tab="metrics">Metrics</button>
+    <button class="tli-tab active" data-tab="metrics">Chỉ số</button>
     <button class="tli-tab" data-tab="comments">Chat</button>
-    <button class="tli-tab" data-tab="ai">AI Bot</button>
-    <button class="tli-tab" id="tli-tab-alerts" data-tab="alerts">Alerts</button>
+    <button class="tli-tab" data-tab="products">Sản phẩm</button>
+    <button class="tli-tab" data-tab="gifts">Quà tặng</button>
+    <button class="tli-tab" data-tab="ai">Bot AI</button>
+    <button class="tli-tab" id="tli-tab-alerts" data-tab="alerts">Cảnh báo</button>
   </div>
 
   <div class="tli-content">
@@ -25,20 +27,33 @@
     <div class="tli-panel" id="tli-panel-metrics">
       <div class="tli-metrics-grid">
         <div class="tli-metric-card">
-          <div class="tli-metric-label">Viewers</div>
+          <div class="tli-metric-label">Người xem</div>
           <div class="tli-metric-value" id="tli-metric-viewers">0</div>
         </div>
         <div class="tli-metric-card">
-          <div class="tli-metric-label">Likes</div>
+          <div class="tli-metric-label">Lượt thích</div>
           <div class="tli-metric-value" id="tli-metric-likes">0</div>
         </div>
         <div class="tli-metric-card">
-          <div class="tli-metric-label">Engagement</div>
+          <div class="tli-metric-label">Tương tác</div>
           <div class="tli-metric-value" id="tli-metric-engagement">0</div>
         </div>
         <div class="tli-metric-card">
-          <div class="tli-metric-label">Comments</div>
+          <div class="tli-metric-label">Bình luận</div>
           <div class="tli-metric-value" id="tli-metric-comments">0</div>
+        </div>
+      </div>
+      <!-- Room Vibe Indicator -->
+      <div class="tli-vibe-container"
+        style="margin-top: 12px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 5px;">
+          <span style="color: var(--tli-text-dim);">KHÔNG KHÍ PHÒNG (ROOM VIBE)</span>
+          <span id="tli-vibe-status" style="color: var(--tli-primary);">Bình thường</span>
+        </div>
+        <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+          <div id="tli-vibe-bar"
+            style="height: 100%; width: 50%; background: linear-gradient(90deg, #ff0050, #00f2ea); transition: width 0.5s ease;">
+          </div>
         </div>
       </div>
     </div>
@@ -47,7 +62,37 @@
     <div class="tli-panel hidden" id="tli-panel-comments">
       <div id="tli-comments-list">
         <div style="text-align: center; color: var(--tli-text-dim); padding: 40px 20px;">
-          <p style="font-size: 11px;">Listening for live comments...</p>
+          <p style="font-size: 11px;">Đang lắng nghe bình luận trực tiếp...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Panel -->
+    <div class="tli-panel hidden" id="tli-panel-products">
+      <div id="tli-products-list">
+        <div style="text-align: center; color: var(--tli-text-dim); padding: 40px 20px;">
+          <p style="font-size: 11px;">Đang quét sản phẩm...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gifts Panel -->
+    <div class="tli-panel hidden" id="tli-panel-gifts">
+      <div id="tli-gift-summary"
+        style="padding: 12px; background: rgba(0, 242, 234, 0.1); margin-bottom: 8px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-size: 10px; opacity: 0.7;">TỔNG DIAMOND ƯỚC TÍNH</div>
+          <div style="font-size: 18px; font-weight: bold; color: var(--tli-primary);" id="tli-gift-total-diamonds">0 💎
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 10px; opacity: 0.7;">QUÀ TẶNG</div>
+          <div style="font-size: 18px; font-weight: bold;" id="tli-gift-count">0</div>
+        </div>
+      </div>
+      <div id="tli-gifts-list" style="max-height: 300px; overflow-y: auto;">
+        <div style="text-align: center; color: var(--tli-text-dim); padding: 40px 20px;">
+          <p style="font-size: 11px;">Đang chờ quà tặng...</p>
         </div>
       </div>
     </div>
@@ -58,46 +103,59 @@
       <div class="tli-settings-box"
         style="border-left: 4px solid var(--tli-primary); background: rgba(0, 242, 234, 0.05);">
         <h3 style="color: var(--tli-primary); display: flex; justify-content: space-between;">
-          🛰️ AI COMMAND CENTER
+          🛰️ TRUNG TÂM ĐIỀU KHIỂN AI
           <span id="tli-ai-status-pulse" class="tli-pulse"></span>
         </h3>
 
         <div class="tli-stats-grid">
           <div class="tli-stat-mini">
-            <div class="tli-stat-mini-label">TOTAL SENT</div>
+            <div class="tli-stat-mini-label">ĐÃ GỬI</div>
             <div class="tli-stat-mini-value" id="tli-ai-stat-total">0</div>
           </div>
           <div class="tli-stat-mini">
-            <div class="tli-stat-mini-label">LATENCY</div>
+            <div class="tli-stat-mini-label">ĐỘ TRỄ</div>
             <div class="tli-stat-mini-value" id="tli-ai-stat-latency">0ms</div>
           </div>
           <div class="tli-stat-mini">
-            <div class="tli-stat-mini-label">NEXT IN</div>
+            <div class="tli-stat-mini-label">KẾ TIẾP</div>
             <div class="tli-stat-mini-value" id="tli-ai-stat-countdown">--</div>
           </div>
         </div>
 
         <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <div class="tli-sensor-tag">👁️ Vision Hits: <span id="tli-ai-stat-vision">0</span></div>
-          <div class="tli-sensor-tag">🎙️ Voice Hits: <span id="tli-ai-stat-voice">0</span></div>
+          <div class="tli-sensor-tag">👁️ Thị giác: <span id="tli-ai-stat-vision">0</span></div>
+          <div class="tli-sensor-tag">🎙️ Thính giác: <span id="tli-ai-stat-voice">0</span></div>
         </div>
         <div class="tli-sensor-tag"
           style="margin-top: 8px; justify-content: center; border: 1px dashed var(--tli-primary);">
-          🧠 Linguistic Sync: <span id="tli-ai-stat-sync" style="color: var(--tli-primary)">Active</span>
+          🧠 Đồng bộ ngôn ngữ: <span id="tli-ai-stat-sync" style="color: var(--tli-primary)">Đang chạy</span>
+        </div>
+
+        <!-- NEW: LIVE SUMMARY BOX -->
+        <div id="tli-ai-summary-box"
+          style="margin-top: 15px; padding: 12px; background: rgba(255, 107, 107, 0.1); border-radius: 8px; border: 1px solid rgba(255, 107, 107, 0.2);">
+          <h4
+            style="font-size: 10px; color: #ff6b6b; margin-bottom: 8px; display: flex; align-items: center; gap: 5px;">
+            🎙️ TÓM TẮT TRỰC TIẾP (LIVE SUMMARY)
+            <span id="tli-ai-summary-loading" class="tli-pulse" style="background: #ff6b6b; display: none;"></span>
+          </h4>
+          <div id="tli-ai-summary-text" style="font-size: 11px; line-height: 1.4; color: #fff;">
+            Đang thu thập dữ liệu âm thanh để tóm tắt...
+          </div>
         </div>
 
         <!-- SENSORY LOG: MEDIA PREVIEW -->
         <div class="tli-sensory-gallery" style="margin-top: 15px;">
           <h4
             style="font-size: 9px; color: var(--tli-text-dim); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px;">
-            📡 MULTIMODAL SENSORY LOG</h4>
+            📡 NHẬT KÝ ĐA PHƯƠNG THỨC</h4>
           <div class="tli-vision-preview-container">
             <img id="tli-ai-preview-vision" src="" alt="AI Vision Feed" class="tli-vision-thumbnail">
-            <div id="tli-vision-scanning" class="tli-scanning-overlay">SCANNING...</div>
+            <div id="tli-vision-scanning" class="tli-scanning-overlay">ĐANG QUÉT...</div>
           </div>
           <div class="tli-voice-indicator" style="margin-top: 8px;">
             <div class="tli-sensor-tag" style="font-size: 9px;">
-              🎙️ Last Voice Activity: <span id="tli-ai-stat-voice-time">--:--</span>
+              🎙️ Hoạt động giọng nói cuối: <span id="tli-ai-stat-voice-time">--:--</span>
             </div>
           </div>
         </div>
@@ -105,16 +163,16 @@
 
       <!-- Section 1: AI CORE -->
       <div class="tli-settings-box">
-        <h3 style="color: var(--tli-primary)">⚙️ AI CORE</h3>
+        <h3 style="color: var(--tli-primary)">⚙️ CỐT LÕI AI</h3>
         <div style="margin-bottom: 12px;">
           <label
             style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Gemini
             2.5 API Key</label>
-          <input type="password" id="tli-input-apikey" placeholder="Enter API Key...">
+          <input type="password" id="tli-input-apikey" placeholder="Nhập API Key...">
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 12px;">AI Auto-Response</span>
+          <span style="font-size: 12px;">Tự động phản hồi</span>
           <label class="tli-switch">
             <input type="checkbox" id="tli-toggle-ai">
             <span class="tli-slider"></span>
@@ -124,60 +182,115 @@
 
       <!-- Section 2: VIRTUAL PERSONA -->
       <div class="tli-settings-box">
-        <h3 style="color: var(--tli-primary)">🎭 VIRTUAL PERSONA</h3>
+        <h3 style="color: var(--tli-primary)">🎭 NHÂN VẬT ẢO</h3>
         <div style="margin-bottom: 12px;">
           <label
-            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Character
-            Bio</label>
+            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Tiêu
+            sử</label>
           <textarea id="tli-input-persona"
-            style="height: 60px;">A friendly and supportive viewer who loves the stream.</textarea>
+            style="height: 60px;">Một người xem thân thiện và nhiệt tình, rất yêu thích buổi live này.</textarea>
         </div>
         <div style="margin-bottom: 12px;">
           <label
-            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Topics</label>
-          <input type="text" id="tli-input-topics" placeholder="Add interests (gaming, chill, etc)...">
+            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Chủ
+            đề</label>
+          <input type="text" id="tli-input-topics" placeholder="Thêm sở thích (gaming, chill, vv)...">
         </div>
         <div>
           <label
-            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Interaction
-            Style</label>
+            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Phong
+            cách tương tác</label>
           <select id="tli-select-style">
-            <option value="Friendly">Friendly & Kind</option>
-            <option value="Hype">Hype & Energetic</option>
-            <option value="Curious">Curious & Questioning</option>
-            <option value="Sarcastic">Sarcastic</option>
+            <option value="Friendly">Thân thiện & Tốt bụng</option>
+            <option value="Hype">Năng nổ & Nhiệt huyết</option>
+            <option value="Curious">Tò mò & Hay hỏi</option>
+            <option value="Sarcastic">Mỉa mai</option>
           </select>
         </div>
       </div>
 
       <!-- Section 4: MULTIMODAL INTELLIGENCE -->
       <div class="tli-settings-box" style="border-color: var(--tli-accent)">
-        <h3 style="color: var(--tli-accent)">⚡ MULTIMODAL SENSORS</h3>
+        <h3 style="color: var(--tli-accent)">⚡ CẢM BIẾN ĐA PHƯƠNG THỨC</h3>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <span style="font-size: 12px;">👁️ Live Vision Analysis</span>
+          <span style="font-size: 12px;">👁️ Phân tích hình ảnh trực tiếp</span>
           <label class="tli-switch">
             <input type="checkbox" id="tli-toggle-vision">
             <span class="tli-slider"></span>
           </label>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <span style="font-size: 12px;">🎙️ Host Voice Analysis</span>
+          <span style="font-size: 12px;">🎙️ Phân tích giọng nói Host</span>
           <label class="tli-switch">
             <input type="checkbox" id="tli-toggle-voice">
             <span class="tli-slider"></span>
           </label>
         </div>
         <p style="font-size: 9px; color: var(--tli-text-dim); font-style: italic;">
-          * Visions & Voice sensors use Gemini 2.5 Flash to 'see' and 'hear' the host.
+          * Cảm biến Hình ảnh & Giọng nói sử dụng Gemini 2.5 Flash để 'thấy' và 'nghe' host.
         </p>
+      </div>
+
+      <!-- Section 5: PRODUCT INTELLIGENCE -->
+      <div class="tli-settings-box" style="border-color: #ffd700;">
+        <h3 style="color: #ffd700; display: flex; justify-content: space-between; align-items: center;">
+          🛍️ TRÍ TUỆ SẢN PHẨM
+          <span id="tli-product-count"
+            style="font-size: 10px; background: rgba(255, 215, 0, 0.2); padding: 2px 6px; border-radius: 4px;">0
+            SP</span>
+        </h3>
+
+        <!-- Input Area -->
+        <div style="margin-bottom: 12px;">
+          <label
+            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">
+            Nguồn dữ liệu (Link / Text)
+          </label>
+          <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+            <input type="text" id="tli-input-product-source" placeholder="Dán link shop hoặc danh sách tên sản phẩm..."
+              style="flex: 1; font-size: 11px;">
+            <button id="tli-btn-scan-product" class="tli-btn-icon"
+              style="width: 30px; background: rgba(255, 215, 0, 0.2); color: #ffd700;" title="Phân tích">
+              🔍
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <button id="tli-btn-import-live" class="tli-btn-small"
+              style="flex: 1; border: 1px dashed #ffd700; color: #ffd700; opacity: 0.8;">
+              📥 Lấy từ Live
+            </button>
+            <button id="tli-btn-clear-products" class="tli-btn-small"
+              style="flex: 1; border: 1px dashed #ff6b6b; color: #ff6b6b; opacity: 0.8;">
+              🗑️ Xóa tất cả
+            </button>
+          </div>
+        </div>
+
+        <!-- Visual List -->
+        <div style="margin-bottom: 12px;">
+          <label
+            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">
+            Danh sách đã hiểu (<span id="tli-product-list-status">Sẵn sàng</span>)
+          </label>
+          <div id="tli-product-chips"
+            style="min-height: 40px; max-height: 120px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 4px; padding: 4px; display: flex; flex-wrap: wrap; gap: 4px;">
+            <div style="width: 100%; text-align: center; color: var(--tli-text-dim); font-size: 10px; padding: 10px;">
+              Chưa có sản phẩm nào.
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden input to store final context for AI -->
+        <textarea id="tli-input-product-context" style="display: none;"></textarea>
       </div>
 
       <!-- Section 3: AI ENGAGEMENT -->
       <div class="tli-settings-box" style="border-color: var(--tli-secondary)">
-        <h3 style="color: var(--tli-secondary)">🔥 AUTO-ENGAGEMENT</h3>
+        <h3 style="color: var(--tli-secondary)">🔥 TỰ ĐỘNG TƯƠNG TÁC</h3>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <span style="font-size: 13px; font-weight: 700;">Enable AI Commenting</span>
+          <span style="font-size: 13px; font-weight: 700;">Bật Bình luận AI</span>
           <label class="tli-switch" style="transform: scale(1.1);">
             <input type="checkbox" id="tli-toggle-use-ai">
             <span class="tli-slider"></span>
@@ -185,18 +298,18 @@
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <span style="font-size: 11px; color: var(--tli-text-dim);">Interval (seconds)</span>
+          <span style="font-size: 11px; color: var(--tli-text-dim);">Khoảng cách (giây)</span>
           <input type="number" id="tli-input-interval" value="30" min="5" style="width: 70px;">
         </div>
 
         <button id="tli-btn-ai-manual" class="tli-btn-premium">
-          ✨ GENERATE & POST NOW
+          ✨ TẠO & GỬI NGAY
         </button>
 
         <div style="margin-top: 16px;">
           <label
-            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Backup
-            Templates</label>
+            style="display: block; font-size: 10px; margin-bottom: 6px; color: var(--tli-text-dim); text-transform: uppercase;">Mẫu
+            bình luận dự phòng</label>
           <textarea id="tli-input-templates" style="height: 40px; font-size: 10px;">Tuyệt vời quá!</textarea>
         </div>
       </div>
@@ -206,7 +319,7 @@
     <div class="tli-panel hidden" id="tli-panel-alerts">
       <div id="tli-alerts-list">
         <div style="text-align: center; color: var(--tli-text-dim); padding: 40px 20px;">
-          <p style="font-size: 11px;">Zero anomalies detected.</p>
+          <p style="font-size: 11px;">Chưa phát hiện bất thường nào.</p>
         </div>
       </div>
     </div>

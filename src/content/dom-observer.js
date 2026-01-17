@@ -1,31 +1,25 @@
 import { logger } from '../utils/logger.js';
 
 export class DOMObserver {
-  constructor(selectors, onCommentCallback) {
+  constructor(selectors, onCommentCallback, onGiftCallback) {
     this.selectors = selectors;
     this.onCommentCallback = onCommentCallback;
+    this.onGiftCallback = onGiftCallback;
     this.observer = null;
   }
 
   start() {
     logger.info('Starting DOM Observer...');
-    
-    // We need to find the container that holds the comments
-    // TikTok comments are often in a scrollable list
-    // We'll look for the container in a loop until it appears
     this.observeLoop();
   }
 
   observeLoop() {
     this.checkExist = setInterval(() => {
-      // Defensive checks
       if (!this.selectors || !this.selectors.comment) {
         logger.warn('Selectors not ready in DOMObserver');
         return;
       }
-      
-      // Note: We might need a more specific selector for the comment list container
-      // For now, we'll try to find any element matching the comment selector's parent
+
       const firstComment = document.querySelector(this.selectors.comment.container);
       if (firstComment) {
         const container = firstComment.parentElement;
@@ -44,12 +38,22 @@ export class DOMObserver {
         if (mutation.type === 'childList') {
           for (const node of mutation.addedNodes) {
             if (node.nodeType === Node.ELEMENT_NODE) {
-              // Check if the added node is a comment or contains comments
+              // Check Comments
               if (node.matches(this.selectors.comment.container)) {
                 this.onCommentCallback(node);
               } else {
                 const comments = node.querySelectorAll(this.selectors.comment.container);
                 comments.forEach(c => this.onCommentCallback(c));
+              }
+
+              // Check Gifts
+              if (this.selectors.gift) {
+                if (node.matches(this.selectors.gift.container)) {
+                  this.onGiftCallback(node);
+                } else {
+                  const gifts = node.querySelectorAll(this.selectors.gift.container);
+                  gifts.forEach(g => this.onGiftCallback(g));
+                }
               }
             }
           }
@@ -61,8 +65,8 @@ export class DOMObserver {
       childList: true,
       subtree: true
     });
-    
-    logger.info('MutationObserver initialized on container');
+
+    logger.info('MutationObserver initialized with Gift tracking');
   }
 
   stop() {

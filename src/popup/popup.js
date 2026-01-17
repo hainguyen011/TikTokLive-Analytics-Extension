@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   exportBtn.addEventListener('click', async () => {
     const result = await chrome.storage.local.get(['session_data']);
     const data = result.session_data || [];
-    
+
     if (data.length === 0) {
-      alert('No session data found to export.');
+      alert('Không tìm thấy dữ liệu phiên nào để xuất.');
       return;
     }
 
@@ -50,9 +50,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   clearBtn.addEventListener('click', async () => {
-    if (confirm('Are you sure you want to clear all session data?')) {
+    if (confirm('Bạn có chắc chắn muốn xóa toàn bộ dữ liệu phiên không?')) {
       await chrome.storage.local.remove(['session_data']);
-      alert('History cleared.');
+      alert('Đã xóa lịch sử.');
     }
   });
 });
